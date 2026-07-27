@@ -1,16 +1,49 @@
-# React + Vite
+# Cargo SaaS Backoffice
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Minimal backoffice foundation aligned with the current Cargo backend modules.
 
-Currently, two official plugins are available:
+## Kept modules
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Gp - general settings
+- Ad - administration
+- Ap - application / portal
+- Cr - customer
+- Ca - cargo operations
+- Pos - point of sale
+- Re - reports
+- Gl - ledger / posting setup
 
-## React Compiler
+## Project structure
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```text
+src/Auth
+src/components
+src/constants
+src/contexts
+src/layouts
+src/Modules/{Ad,Ap,Ca,Cr,Gl,Gp,Pos,Re}
+src/routes
+src/services
+```
 
-## Expanding the ESLint configuration
+## Convention
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Internal API: `POST /api/v1/back/action`
+- Action header: `posting_code`
+- Action values use Cargo codes such as `adm0010`, `gen0010`, `car0020`.
+- Third-party/private UI packages, copied legacy assets and copied UI design are not used.
+- Current screens are foundation placeholders. Cargo-specific design can replace them later without changing the route/module/action skeleton.
+
+## Route and API pattern
+
+Each module keeps a `*RouteConfig.jsx` file similar to the core backoffice pattern. Action screens are reachable by Cargo action code paths, for example `/adm0010`, `/gen0010`, `/car0020`.
+
+API calls can use `send(action_code, data, showLoading)` for core-style component code. Internally it calls `ApiService(action_code, data)`, which sends `POST /api/v1/back/action` with `posting_code: <action_code>`. Multipart requests use `sendMultiForm(action_code, data, showLoading)`.
+
+## Run
+
+```powershell
+copy .env.example .env
+npm install
+npm run dev
+```
